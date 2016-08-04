@@ -1,8 +1,13 @@
 # JavaScript Functions & Scope
 
 
-## First Class Functions
+## Table of Contents
 
+* [First Class Functions](#first-class-functions)
+* [Scoping]](#scoping)
+
+
+## First Class Functions
 
 ### Assign a Function to a Variable
 
@@ -19,7 +24,7 @@ console.log(circumference(circle)); //314.159
 ```
 
 
-### Passing a Function as Argument to Another Function
+### Passing a Function as an Argument to Another Function
 
 ```javascript
 /*
@@ -63,4 +68,75 @@ var inner = outer(10);
 
 //invoke inner function
 inner(); //15
+```
+
+
+## Scoping
+
+### Variable Declaration Hoisting Rule
+
+```javascript
+//this function tries to check the presence of variable 'a' before and after its declaration
+function scopeTest() {
+  console.log(a); // undefined - this means variable a is hoisted at this point.No ReferenceError
+  var a = 1;
+  console.log(a); //1
+}
+
+scopeTest();
+```
+
+
+### Function Declaration Statement Hoisting Rule
+
+```javascript
+
+//this function illustrates the hoisting of function statement
+function outer() {
+  //function inner is in scope here
+  //it could be invoked at this place
+  inner();
+
+  console.log(typeof inner === 'function');
+  //true
+
+  function inner() {
+    console.log('I can be invoked anywhere inside outer function');
+  }
+
+  //function inner is in scope here
+  //it could be invoked at this place
+  inner();
+  console.log(typeof inner === 'function');
+  //true
+}
+
+outer();
+```
+
+
+### Function definition expression hoisting rule
+
+```javascript
+//this function illustrates the hoisting of function definition expression
+function outer() {
+  //function inner is not in scope here
+  //it can not be invoked at this place
+  inner(); //typeError
+
+  console.log(typeof inner === 'function');
+  //false
+
+  var inner = function () {
+    console.log('I\'m not hoisted at the top');
+  };
+
+  //function inner is in scope here
+  // it could be invoked at this place
+  inner();
+  console.log(typeof inner === 'function');
+  //true
+}
+
+outer();
 ```
