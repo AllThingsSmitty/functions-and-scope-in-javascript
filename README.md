@@ -4,7 +4,7 @@
 ## Table of Contents
 
 * [First Class Functions](#first-class-functions)
-* [Scoping]](#scoping)
+* [Scoping](#scoping)
 
 
 ## First Class Functions
