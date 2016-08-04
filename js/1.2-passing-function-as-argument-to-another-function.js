@@ -1,6 +1,6 @@
 /*
  This is a JSON replacer function, which filters out property
- "radius" from object serialization process
+ 'radius' from object serialization process
  */
 
 var filter = function (key, value) {
@@ -19,4 +19,4 @@ var circle = {x: 100, y: 200, radius: 50};
 var info = JSON.stringify(circle, filter);
 
 //print the string equivalent of object
-console.log(info);  // '{"x":100,"y":200}'
+console.log(info);  // '{'x': 100, 'y': 200}'
