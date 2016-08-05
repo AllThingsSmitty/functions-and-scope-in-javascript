@@ -27,12 +27,9 @@ console.log(circumference(circle)); //314.159
 
 ### Passing a Function as an Argument to Another Function
 
-```javascript
-/*
- This is a JSON replacer function, which filters out property
- 'radius' from object serialization process
- */
+This example is a JSON replacer function which filters out property `'radius'` from object serialization process.
 
+```javascript
 var filter = function (key, value) {
 //don't serialize property 'radius'
   if (key === "radius") {
@@ -148,8 +145,10 @@ outer();
 
 ### Function Invocation
 
+This function returns the word boundaries of a string.
+
+
 ```javascript
-//this function returns the word boundaries of a string
 //\w to \W or \W to \w transition is a word boundary
 function wordBoundaries(subject) {
   //regex for word boundary position
@@ -159,7 +158,7 @@ function wordBoundaries(subject) {
   return subject.match(pattern).length;
 }
 
-var book = 'JavaScript Closure in Depth';
+var book = 'JavaScript: The Good Parts';
 console.log(wordBoundaries(book)); //8
 ```
 
@@ -299,9 +298,6 @@ for(property in testObject1){
 }
 ```
 
-### Testing Enumerability
-
-
 ### Call Method - Search Binary Numbers
 
 ```javascript
@@ -382,3 +378,16 @@ console.log(object1.result); //[ '100', '1010' ]
 //query result property on object2
 console.log(object2.result); // [ '1010' ]
 ```
+
+
+## 3.5 this & nested function issue
+
+### 3.5.1 Basic reducer function
+
+### 3.5.2 Simulate problem - reducer factor & this
+
+### 3.5.3 Using this keyword inside nested function
+
+## Further reading
+
+### 4.1
