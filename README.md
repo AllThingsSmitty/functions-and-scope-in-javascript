@@ -382,17 +382,3 @@ console.log(object1.result); //[ '100', '1010' ]
 //query result property on object2
 console.log(object2.result); // [ '1010' ]
 ```
-
-
- -
- - 3.5 this & nested function issue
- -
- -  3.5.1 Basic reducer function
- -
- -  3.5.2 Simulate problem - reducer factor & this
- -
- -  3.5.3 Using this keyword inside nested function
- -
- - Further reading
- -
-### 4.1
