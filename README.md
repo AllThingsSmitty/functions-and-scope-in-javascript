@@ -242,9 +242,9 @@ console.log(cylinder2.volume());
 ```
 
 
-## Indirect invocation
+## Indirect Invocation
 
-### Call method
+### Call Method
 
 ```javascript
 //This is a function that returns the circumference of a circle
@@ -263,7 +263,7 @@ console.log(circumference.call(circle1)); //314.159
 console.log(circumference.call(circle2)); //157.079
 ```
 
-### Apply method
+### Apply Method
 
 ```javascript
 //this function makes all arguments non enumerable
@@ -297,10 +297,10 @@ for(property in testObject1){
 }
 ```
 
-### Testing enumerability
+### Testing Enumerability
 
 
-### Call method - search binary numbers
+### Call Method - Search Binary Numbers
 
 ```javascript
 /*
