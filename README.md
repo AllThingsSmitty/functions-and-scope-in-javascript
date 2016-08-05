@@ -5,6 +5,7 @@
 
 * [First Class Functions](#first-class-functions)
 * [Scoping](#scoping)
+* [Invocation Context(=this)](#invocation-contextthis)
 
 
 ## First Class Functions
@@ -115,7 +116,7 @@ outer();
 ```
 
 
-### Function definition expression hoisting rule
+### Function Definition Expression Hoisting Rule
 
 ```javascript
 //this function illustrates the hoisting of function definition expression
@@ -139,4 +140,157 @@ function outer() {
 }
 
 outer();
+```
+
+## Invocation Context(=this)
+
+### Function Invocation
+
+```javascript
+//this function returns the word boundaries of a string
+//\w to \W or \W to \w transition is a word boundary
+function wordBoundaries(subject) {
+  //regex for word boundary position
+  var pattern = /\b/g;
+
+  //invoke match method defined on the string
+  return subject.match(pattern).length;
+}
+
+var book = 'JavaScript Closure in Depth';
+console.log(wordBoundaries(book)); //8
+```
+
+## Method Invocation
+
+```javascript
+//define cylinder object
+var cylinder = {
+  radius: 10,
+  height: 20
+};
+
+/*
+define function on cylinder object
+volume is the property of cylinder object
+this inside function is the cylinder object
+this.radius means radius property of the cylinder object
+this = invocation context = cylinder object
+*/
+cylinder.volume = function () {
+  return Math.PI * Math.pow(this.radius, 2) * this.height;
+};
+
+//invoke the method on the cylinder object
+console.log(cylinder.volume());
+```
+
+
+## Constructor Invocation
+
+```javascript
+//This is a constructor function
+//Accepts 2 arguments and set the newly created object's properties
+//this or invocation context is the newly created cylinder object
+function Cylinder(radius, height) {
+  this.radius = radius; //object property
+  this.height = height; //object property
+  //object method
+  this.volume = function () {
+    return Math.PI * Math.pow(this.radius, 2) * this.height;
+  };
+}
+
+//create object using constructor function
+//this inside constructor = cylinder1
+var cylinder1 = new Cylinder(10, 20);
+console.log(cylinder1.volume());
+
+//create another object
+//this inside constructor = cylinder2
+var cylinder2 = new Cylinder(20, 10);
+console.log(cylinder2.volume());
+```
+
+### Using Prototype Object
+
+```javascript
+//This is a constructor function
+//Accepts 2 arguments and set the newly created object's properties
+//this or invocation context is the newly created cylinder object
+function Cylinder(radius, height) {
+  this.radius = radius; //object property
+  this.height = height; //object property
+}
+
+//now volume method is defined on the prototype object
+//prototype object is the property defined on Cylinder constructor
+Cylinder.prototype.volume = function () {
+  return Math.PI * Math.pow(this.radius, 2) * this.height;
+};
+
+//create object using constructor function
+//this inside constructor = cylinder1
+var cylinder1 = new Cylinder(10, 20);
+console.log(cylinder1.volume());
+
+//create another object
+//this inside constructor = cylinder2
+var cylinder2 = new Cylinder(20, 10);
+console.log(cylinder2.volume());
+```
+
+## Indirect invocation
+
+### Call method
+
+```javascript
+//This is a function that returns the circumference of a circle
+//this keyword is not associated with any object
+var circumference = function () {
+  return 2 * Math.PI * this.radius;
+};
+//define circle objects
+var circle1 = {x: 100, y: 200, radius: 50};
+var circle2 = {x: 200, y: 300, radius: 25};
+
+//invoke the function
+//this = circle1
+console.log(circumference.call(circle1)); //314.159
+//this = circle2
+console.log(circumference.call(circle2)); //157.079
+```
+
+### Apply method
+
+```javascript
+//this function makes all arguments non enumerable
+var makeNonEnumerable = function () {
+  //iterate over all arguments and change the enumerable attribute false
+  for (var i=0; i < arguments.length; i++){
+    Object.defineProperty(this,arguments[i],{enumerable:false});
+  }
+};
+
+var testObject1 = {x:1,y:2,z:3};
+
+//make x and y property non enumerable
+//We pass individual argument instead of array
+makeNonEnumerable.call(testObject1,"x","y");
+//check the enumerable attribute by console.log
+Object.getOwnPropertyDescriptor(testObject1, 'x').enumerable; //false
+Object.getOwnPropertyDescriptor(testObject1, 'y').enumerable; //false
+Object.getOwnPropertyDescriptor(testObject1, 'z').enumerable; //true
+
+var testObject2 = {p:1,q:2,r:3};
+//We pass array instead of individual argument
+makeNonEnumerable.apply(testObject2,['p', 'q']);
+Object.getOwnPropertyDescriptor(testObject2, 'p').enumerable; //false
+Object.getOwnPropertyDescriptor(testObject2, 'q').enumerable; //false
+Object.getOwnPropertyDescriptor(testObject2, 'r').enumerable; //true
+
+var property;
+for(property in testObject1){
+  console.log(property);
+}
 ```
