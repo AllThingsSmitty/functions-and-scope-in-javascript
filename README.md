@@ -1,19 +1,23 @@
-# Functions and Scope (Closure) Examples in JavaScript
+# Functions and Scope (Closure) in JavaScript
 
 
 ## Table of Contents
 
 * [First Class Functions](#first-class-functions)
 * [Scoping](#scoping)
-* [Invocation Context(=this)](#invocation-contextthis)
+* [Invocation Context (`this`)](#invocation-context-this)
+* [Indirect Invocation](#indirect-invocation)
+* [`this` and Nested Function Issue](#this-and-nested-function-issues)
+* [Arguments](#arguments)
 
 
 ## First Class Functions
 
 ### Assign a Function to a Variable
 
+This function returns the circumference of a circle:
+
 ```javascript
-//returns the circumference of a circle
 var circumference = function (circle) {
   return 2 * Math.PI * circle.radius;
 };
@@ -27,7 +31,7 @@ console.log(circumference(circle)); //314.159
 
 ### Passing a Function as an Argument to Another Function
 
-This example is a JSON replacer function which filters out property `'radius'` from object serialization process.
+This example is a JSON replacer function which filters out property `radius` from object serialization process:
 
 ```javascript
 var filter = function (key, value) {
@@ -51,8 +55,9 @@ console.log(info);  // '{'x': 100, 'y': 200}'
 
 ### Returning a Function as a Value From Another Function
 
+In this example an outer function is defined that returns inner function:
+
 ```javascript
-//define outer function that returns inner function
 function outer(x) {
 //this secret is a closure
   var secret = 5;
@@ -73,7 +78,7 @@ inner(); //15
 
 ### Variable Declaration Hoisting Rule
 
-This function tries to check the presence of variable `'a'` before and after its declaration.
+This function tries to check the presence of variable `a` before and after its declaration:
 
 ```javascript
 function scopeTest() {
@@ -88,7 +93,7 @@ scopeTest();
 
 ### Function Declaration Statement Hoisting Rule
 
-This function illustrates the hoisting of function statement.
+This function illustrates the hoisting of function statement:
 
 ```javascript
 function outer() {
@@ -141,12 +146,11 @@ function outer() {
 outer();
 ```
 
-## Invocation Context(=this)
+## Invocation Context (`this`)
 
 ### Function Invocation
 
-This function returns the word boundaries of a string.
-
+This function returns the word boundaries of a string:
 
 ```javascript
 //\w to \W or \W to \w transition is a word boundary
@@ -163,7 +167,7 @@ console.log(wordBoundaries(book)); //8
 ```
 
 
-## Method Invocation
+### Method Invocation
 
 ```javascript
 //define cylinder object
@@ -188,12 +192,12 @@ console.log(cylinder.volume());
 ```
 
 
-## Constructor Invocation
+### Constructor Invocation
+
+This is a constructor function, and in this example it accepts 2 arguments and sets the newly created object's properties:
 
 ```javascript
-//This is a constructor function
-//Accepts 2 arguments and set the newly created object's properties
-//this or invocation context is the newly created cylinder object
+//`this` or invocation context is the newly created cylinder object
 function Cylinder(radius, height) {
   this.radius = radius; //object property
   this.height = height; //object property
@@ -217,15 +221,17 @@ console.log(cylinder2.volume());
 ### Using Prototype Object
 
 ```javascript
-//This is a constructor function
 //Accepts 2 arguments and set the newly created object's properties
 //this or invocation context is the newly created cylinder object
 function Cylinder(radius, height) {
   this.radius = radius; //object property
   this.height = height; //object property
 }
+```
 
-//now volume method is defined on the prototype object
+Now volume method is defined on the prototype object.
+
+```javascript
 //prototype object is the property defined on Cylinder constructor
 Cylinder.prototype.volume = function () {
   return Math.PI * Math.pow(this.radius, 2) * this.height;
@@ -247,9 +253,10 @@ console.log(cylinder2.volume());
 
 ### Call Method
 
+This is a function that returns the circumference of a circle.
+
 ```javascript
-//This is a function that returns the circumference of a circle
-//this keyword is not associated with any object
+//`this` keyword is not associated with any object
 var circumference = function () {
   return 2 * Math.PI * this.radius;
 };
@@ -264,10 +271,12 @@ console.log(circumference.call(circle1)); //314.159
 console.log(circumference.call(circle2)); //157.079
 ```
 
+
 ### Apply Method
 
+This function makes all arguments non enumerable.
+
 ```javascript
-//this function makes all arguments non enumerable
 var makeNonEnumerable = function () {
   //iterate over all arguments and change the enumerable attribute false
   for (var i=0; i < arguments.length; i++){
@@ -298,11 +307,13 @@ for(property in testObject1){
 }
 ```
 
-### Call Method - Search Binary Numbers
+
+### Call Method: Search Binary Numbers
+
+This function finds all binary numbers inside a string.
 
 ```javascript
 /*
-this function finds all binary numbers inside a string
 regex pattern checks digit (0 or 1) one or more times between word boundaries
 \b -> word boundary
 + -> repeat 1 or more time - you can make it lazy by +?
@@ -336,11 +347,12 @@ console.log(object1.result); //[ '100', '1010' ]
 console.log(object2.result); // [ '1010' ]
 ```
 
-### Call Method - Internals
+### Call Method: Internals
+
+This function finds all binary numbers inside a string.
 
 ```javascript
 /*
-this function finds all binary numbers inside a string
 regex pattern checks digit (0 or 1) one or more times between word boundaries
 \b -> word boundary
 + -> repeat 1 or more time - you can make it lazy by +?
@@ -377,4 +389,172 @@ console.log(object1.result); //[ '100', '1010' ]
 
 //query result property on object2
 console.log(object2.result); // [ '1010' ]
+```
+
+
+## `'this` and Nested Function Issues
+
+### Basic Reducer Function
+
+In this example the reducer object has one array and a method reduced:
+
+```javascript
+//Below is the calculation using reduce method and array [100, 200, 300]
+//x = 100, y = 200
+//0.5 * (100 + 200) = 150 -> this will become x in next iteration
+//x = 150, y = 300
+//0.5 * (150 + 300) = 225 -> final value
+var reducer = {
+  a: [100, 200, 300],
+  reduce: function () {
+    return this.a.reduce(function (x, y) {
+      return 0.5 * (x + y);
+    });
+  }
+};
+console.log(reducer.reduce()); //225
+```
+
+### Simulate Problem: Reducer Factor and `this`
+
+```javascript
+
+//reducer object has one array a and method reduce
+//reduce does the job of reducing using reduce method 0.5 * (x + y)
+//Below is the calculation using reduce method and array [100, 200, 300]
+//x = 100, y = 200
+//0.5 * (100 + 200) = 150 -> this will become x in next iteration
+//x = 150, y = 300
+//0.5 * (150 + 300) = 225 -> expected value -> but we get NaN
+var reducer = {
+  a: [100, 200, 300],
+  factor: 0.5,
+  reduce: function () {
+    return this.a.reduce(function (x, y) {
+      return this.factor * (x + y);
+    });
+  }
+};
+console.log(reducer.reduce()); //NaN
+```
+
+
+### Using `this` Keyword Inside a Nested Function
+
+```javascript
+//reducer object has one array a and method reduce
+//reduce does the job of reducing using reduce method 0.5 * (x + y)
+//Below is the calculation using reduce method and array [100, 200, 300]
+//x = 100, y = 200
+//0.5 * (100 + 200) = 150 -> this will become x in next iteration
+//x = 150, y = 300
+//0.5 * (150 + 300) = 225
+var reducer = {
+  a: [100, 200, 300],
+  factor: 0.5,
+  reduce: function () {
+    var self = this;
+    return this.a.reduce(function (x, y) {
+      return self.factor * (x + y);
+    });
+  }
+};
+console.log(reducer.reduce()); //225
+```
+
+
+## Arguments
+
+### Basics
+
+This function tries to explain the flexibility of arguments supplied:
+
+```javascript
+function test(x, y) {
+  // I don't do anything
+  console.log(x);
+  console.log(y);
+  //print arguments object - Array like object
+  console.log(arguments);
+}
+
+//no argument supplied
+test();
+// x - undefined
+// y - undefined
+// { }
+
+//less arguments supplied
+test(1);
+// x - 1
+// y - undefined
+// { '0': 1}
+
+//arguments = parameters = 2
+test(1, 2);
+// x - 1
+// y - 2
+// {'0': 1, '1': 2 }
+
+//more argument supplied than actual parameters
+test(1, 2, 3);
+// x - 1
+// y - 2
+// {'0': 1, '1': 2, '2': 3}
+```
+
+### Objects
+
+This function adds all the arguments supplied:
+
+```javascript
+function add() {
+  console.log(arguments.length); //3
+  var sum = 0;
+  //iterate over all arguments
+  //trick - save arguments.length in some variable
+  for (var i=0; i < arguments.length; i++){
+    sum +=arguments[i];
+  }
+  return sum;
+}
+
+console.log(add(1,2,3)); //6
+```
+
+### Default Parameters: Keys and `getOwnPropertyNames`
+
+This function returns object properties based on the flag onlyEnumerable:
+
+```javascript
+/*
+getProperties(obj) -> return enumerable own properties
+getProperties(obj, false) -> return enumerable as well as non enumerable properties
+getProperties(obj, true) -> return enumerable own properties
+*/
+
+function getProperties(obj, onlyEnumerable) {
+  //if onlyEnumerable is not passed, set it to true
+  if (onlyEnumerable === undefined) {
+    onlyEnumerable = true;
+  }
+
+  if (onlyEnumerable) {
+    return Object.keys(obj);
+  } else {
+    // enumerable + non enumerable
+    return Object.getOwnPropertyNames(obj);
+  }
+}
+
+//define object with 2 properties
+//by default newly created properties are enumerable
+var obj = {x: 1, y: 2};
+
+//define one non enumerable property "z"
+Object.defineProperty(obj, 'z', {enumerable: false, value: 3});
+
+console.log(getProperties(obj)); // [ 'x', 'y' ]
+console.log(getProperties(obj, false)); // [ 'x', 'y', 'z' ]
+console.log(getProperties(obj, true)); // [ 'x', 'y' ]
 ```
