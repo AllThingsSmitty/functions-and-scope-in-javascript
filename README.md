@@ -36,7 +36,7 @@ This example is a JSON replacer function which filters out property `radius` fro
 ```javascript
 var filter = function (key, value) {
 //don't serialize property 'radius'
-  if (key === "radius") {
+  if (key === 'radius') {
     return undefined;
   } else {
     return value;
@@ -82,7 +82,7 @@ This function tries to check the presence of variable `a` before and after its d
 
 ```javascript
 function scopeTest() {
-  console.log(a); // undefined - this means variable a is hoisted at this point.No ReferenceError
+  console.log(a); // undefined - this means variable a is hoisted at this point. No ReferenceError
   var a = 1;
   console.log(a); //1
 }
@@ -279,7 +279,7 @@ This function makes all arguments non enumerable.
 ```javascript
 var makeNonEnumerable = function () {
   //iterate over all arguments and change the enumerable attribute false
-  for (var i=0; i < arguments.length; i++){
+  for (var i = 0; i < arguments.length; i++){
     Object.defineProperty(this,arguments[i],{enumerable:false});
   }
 };
@@ -288,13 +288,13 @@ var testObject1 = {x:1,y:2,z:3};
 
 //make x and y property non enumerable
 //We pass individual argument instead of array
-makeNonEnumerable.call(testObject1,"x","y");
+makeNonEnumerable.call(testObject1, 'x', 'y");
 //check the enumerable attribute by console.log
 Object.getOwnPropertyDescriptor(testObject1, 'x').enumerable; //false
 Object.getOwnPropertyDescriptor(testObject1, 'y').enumerable; //false
 Object.getOwnPropertyDescriptor(testObject1, 'z').enumerable; //true
 
-var testObject2 = {p:1,q:2,r:3};
+var testObject2 = {p:1, q:2, r:3};
 //We pass array instead of individual argument
 makeNonEnumerable.apply(testObject2,['p', 'q']);
 Object.getOwnPropertyDescriptor(testObject2, 'p').enumerable; //false
